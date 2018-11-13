@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "sim_bp.h"
+#include "Branch_Predictor.h"
 
 /*  argc holds the number of command line arguments
     argv[] holds the commands themselves
@@ -21,7 +22,9 @@ int main (int argc, char* argv[])
     bp_params params;       // look at sim_bp.h header file for the the definition of struct bp_params
     char outcome;           // Variable holds branch outcome
     unsigned long int addr; // Variable holds the address read from input file
-    
+    unsigned long int predictions, mispredictions;
+    float rateOfMisPredictions;
+    predictor_type predictor_type1 = GSHARE;
     if (!(argc == 4 || argc == 5 || argc == 7))
     {
         printf("Error: Wrong number of inputs:%d\n", argc-1);
@@ -33,6 +36,7 @@ int main (int argc, char* argv[])
     // strtoul() converts char* to unsigned long. It is included in <stdlib.h>
     if(strcmp(params.bp_name, "bimodal") == 0)              // Bimodal
     {
+        predictor_type1 = BIMODAL;
         if(argc != 4)
         {
             printf("Error: %s wrong number of inputs:%d\n", params.bp_name, argc-1);
@@ -44,6 +48,7 @@ int main (int argc, char* argv[])
     }
     else if(strcmp(params.bp_name, "gshare") == 0)          // Gshare
     {
+        predictor_type1 = GSHARE;
         if(argc != 5)
         {
             printf("Error: %s wrong number of inputs:%d\n", params.bp_name, argc-1);
@@ -57,6 +62,7 @@ int main (int argc, char* argv[])
     }
     else if(strcmp(params.bp_name, "hybrid") == 0)          // Hybrid
     {
+        predictor_type1 = HYBRID;
         if(argc != 7)
         {
             printf("Error: %s wrong number of inputs:%d\n", params.bp_name, argc-1);
@@ -84,7 +90,9 @@ int main (int argc, char* argv[])
         printf("Error: Unable to open file %s\n", trace_file);
         exit(EXIT_FAILURE);
     }
-    
+
+    Branch_Predictor branchPredictor(params.bp_name, params.M2, params.N, params.M1, params.K, predictor_type1);
+
     char str[2];
     while(fscanf(FP, "%lx %s", &addr, str) != EOF)
     {
@@ -94,9 +102,18 @@ int main (int argc, char* argv[])
             printf("%lx %s\n", addr, "t");           // Print and test if file is read correctly
         else if (outcome == 'n')
             printf("%lx %s\n", addr, "n");          // Print and test if file is read correctly
-        /*************************************
-            Add branch predictor code here
-        **************************************/
+
+        branchPredictor.branchPrediction(addr, outcome);
+    // if(addr == 0x3009c4) return 0;
     }
+
+    predictions = branchPredictor.performanceParameters.numberOfPredictions;
+    mispredictions = branchPredictor.performanceParameters.numberOfMisPredictions;
+    rateOfMisPredictions = mispredictions/(float) predictions;
+    cout << "Number Of Predictions: " << predictions << endl;
+    cout << "Number Of MisPredictions: " << mispredictions<< endl;
+    cout << "Rate of MisPredictions: " << rateOfMisPredictions*100 << endl;
+    branchPredictor.printBranchK();
+
     return 0;
 }
