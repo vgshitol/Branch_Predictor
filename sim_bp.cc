@@ -98,11 +98,11 @@ int main (int argc, char* argv[])
     {
         
         outcome = str[0];
-        if (outcome == 't')
+        /**if (outcome == 't')
             printf("%lx %s\n", addr, "t");           // Print and test if file is read correctly
         else if (outcome == 'n')
             printf("%lx %s\n", addr, "n");          // Print and test if file is read correctly
-
+**/
         branchPredictor.branchPrediction(addr, outcome);
     // if(addr == 0x3009c4) return 0;
     }
@@ -110,10 +110,29 @@ int main (int argc, char* argv[])
     predictions = branchPredictor.performanceParameters.numberOfPredictions;
     mispredictions = branchPredictor.performanceParameters.numberOfMisPredictions;
     rateOfMisPredictions = mispredictions/(float) predictions;
-    cout << "Number Of Predictions: " << predictions << endl;
-    cout << "Number Of MisPredictions: " << mispredictions<< endl;
-    cout << "Rate of MisPredictions: " << rateOfMisPredictions*100 << endl;
-    branchPredictor.printBranchK();
+
+    cout << "OUTPUT" << endl;
+    cout << "number of predictions:" << predictions << endl;
+    cout << "number of mispredictions:" << mispredictions<< endl;
+    rateOfMisPredictions = round(rateOfMisPredictions * 10000)/100;
+    printf( "misprediction rate:   %.2f",rateOfMisPredictions);
+    cout << "%" << endl;
+
+
+    if(predictor_type1 == HYBRID){
+        cout << "FINAL CHOOSER CONTENTS" << endl;
+        branchPredictor.printBranch(HYBRID);
+        cout << "FINAL GSHARE CONTENTS" << endl;
+        branchPredictor.printBranch(GSHARE);
+        cout << "FINAL BIMODAL CONTENTS" << endl;
+        branchPredictor.printBranch(BIMODAL);
+    } else  if(predictor_type1 == GSHARE){
+        cout << "FINAL GSHARE CONTENTS" << endl;
+        branchPredictor.printBranch(GSHARE);
+    } else {
+        cout << "FINAL BIMODAL CONTENTS" << endl;
+        branchPredictor.printBranch(BIMODAL);
+    }
 
     return 0;
 }
