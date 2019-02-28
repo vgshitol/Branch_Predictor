@@ -1,3 +1,0 @@
-/Users/vishalshitole/Downloads/Branch_Predictor/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/Users/vishalshitole/Downloads/Branch_Predictor/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/vishalshitole/Downloads/Branch_Predictor/cmake-build-debug/CMakeFiles/Branch_Predictor.dir
