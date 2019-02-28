@@ -1,7 +1,7 @@
-#Branch Predictor Simulator
+# Branch Predictor Simulator
 
-To understand how a branch prediction takes place in a bimodal , gshare and a hybrid structure.
-Graphical Analysis of the 3 models shows us how each model is beneficial in prediction.
+### To understand how a branch prediction takes place in a bimodal , gshare and a hybrid structure. 
+### Graphical Analysis of the 3 models shows us how each model is beneficial in prediction.
 
 1. Type "make" to build.  (Type "make clean" first if you already compiled and want to recompile from scratch.)
 
