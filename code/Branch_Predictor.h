@@ -105,6 +105,9 @@ public:
         pmp[HYBRID].indexBitLength = k;
         pmp[HYBRID].numberOfIndexes = (unsigned long) (pow(2, pmp[HYBRID].indexBitLength));
         pmp[HYBRID].branch.resize(pmp[HYBRID].numberOfIndexes);
+        pmp[HYBRID].bhrBitLength = 0;
+        this->pmp[HYBRID].bhr = 0;
+        this->pmp[HYBRID].bhrMaskValue = 0;
      //   cout << "BRANCH SIZE K: " << pmp[HYBRID].branch.size() << endl;
         for (unsigned long int i = 0; i < pmp[HYBRID].branch.size(); i++) pmp[HYBRID].branch.at(i).counter = 1;
     }
