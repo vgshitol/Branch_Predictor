@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 660" font-family="Arial, Helvetica, sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#555"/>
+    </marker>
+    <marker id="arrB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4285F4"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="900" height="660" fill="#ffffff"/>
+
+  <text x="450" y="32" text-anchor="middle" font-size="19" font-weight="bold" fill="#222">Branch predictor — one prediction per branch</text>
+  <text x="450" y="52" text-anchor="middle" font-size="12.5" fill="#666">ECE 563 Project #2: bimodal, gshare and hybrid (tournament) predictors</text>
+
+  <!-- Input -->
+  <rect x="270" y="68" width="360" height="42" rx="8" fill="#E8F0FE" stroke="#4285F4" stroke-width="1.5"/>
+  <text x="450" y="85" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#1a56db">Trace line: &lt;PC hex&gt;  t | n</text>
+  <text x="450" y="103" text-anchor="middle" font-size="12" fill="#444">2,000,000 branches per trace (gcc / jpeg / perl)</text>
+  <line x1="330" y1="110" x2="330" y2="128" stroke="#555" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="450" y1="110" x2="450" y2="128" stroke="#555" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="570" y1="110" x2="570" y2="128" stroke="#555" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Bimodal column -->
+  <rect x="20" y="128" width="270" height="196" rx="8" fill="#F8F9FA" stroke="#4285F4" stroke-width="1.5"/>
+  <text x="155" y="152" text-anchor="middle" font-size="14" font-weight="bold" fill="#4285F4">BIMODAL</text>
+  <text x="155" y="176" text-anchor="middle" font-size="12.5" fill="#222">index = PC[m2+1 : 2]</text>
+  <text x="155" y="194" text-anchor="middle" font-size="12" fill="#555">low m2 PC bits (lowest 2 dropped)</text>
+  <rect x="45" y="206" width="220" height="46" rx="6" fill="#E8F0FE" stroke="#4285F4"/>
+  <text x="155" y="224" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#222">2^m2 entries × 2-bit counter</text>
+  <text x="155" y="242" text-anchor="middle" font-size="12" fill="#444">init = 2 (weakly taken)</text>
+  <text x="155" y="270" text-anchor="middle" font-size="12" fill="#444">predict taken iff counter ≥ 2</text>
+  <text x="155" y="290" text-anchor="middle" font-size="12" fill="#444">no history register (n = 0)</text>
+  <text x="155" y="310" text-anchor="middle" font-size="11.5" fill="#888">./sim bimodal &lt;m2&gt; &lt;trace&gt;</text>
+
+  <!-- Gshare column -->
+  <rect x="315" y="128" width="270" height="196" rx="8" fill="#F8F9FA" stroke="#34A853" stroke-width="1.5"/>
+  <text x="450" y="152" text-anchor="middle" font-size="14" font-weight="bold" fill="#34A853">GSHARE</text>
+  <text x="450" y="176" text-anchor="middle" font-size="12.5" fill="#222">index = PC[m1+1:2] XOR (BHR &lt;&lt; (m1−n))</text>
+  <text x="450" y="194" text-anchor="middle" font-size="12" fill="#555">BHR XORs the top n bits of the index</text>
+  <rect x="340" y="206" width="220" height="46" rx="6" fill="#E6F4EA" stroke="#34A853"/>
+  <text x="450" y="224" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#222">2^m1 entries × 2-bit counter</text>
+  <text x="450" y="242" text-anchor="middle" font-size="12" fill="#444">init = 2 (weakly taken)</text>
+  <rect x="340" y="262" width="220" height="34" rx="6" fill="#E6F4EA" stroke="#34A853"/>
+  <text x="450" y="283" text-anchor="middle" font-size="12" fill="#222">n-bit global history (BHR), init 0</text>
+  <text x="450" y="310" text-anchor="middle" font-size="11.5" fill="#888">./sim gshare &lt;m1&gt; &lt;n&gt; &lt;trace&gt;</text>
+
+  <!-- Hybrid column -->
+  <rect x="610" y="128" width="270" height="196" rx="8" fill="#F8F9FA" stroke="#EA4335" stroke-width="1.5"/>
+  <text x="745" y="152" text-anchor="middle" font-size="14" font-weight="bold" fill="#EA4335">HYBRID (tournament)</text>
+  <text x="745" y="176" text-anchor="middle" font-size="12.5" fill="#222">chooser index = PC[k+1 : 2]</text>
+  <rect x="635" y="188" width="220" height="46" rx="6" fill="#FCE8E6" stroke="#EA4335"/>
+  <text x="745" y="206" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#222">2^k × 2-bit chooser</text>
+  <text x="745" y="224" text-anchor="middle" font-size="12" fill="#444">init = 1 (weakly bimodal)</text>
+  <text x="745" y="252" text-anchor="middle" font-size="12" fill="#222">chooser ≥ 2 → use gshare</text>
+  <text x="745" y="270" text-anchor="middle" font-size="12" fill="#222">chooser &lt; 2 → use bimodal</text>
+  <text x="745" y="290" text-anchor="middle" font-size="12" fill="#444">only the chosen predictor is updated</text>
+  <text x="745" y="310" text-anchor="middle" font-size="11.5" fill="#888">./sim hybrid &lt;k&gt; &lt;m1&gt; &lt;n&gt; &lt;m2&gt; &lt;trace&gt;</text>
+
+  <!-- Predict -->
+  <line x1="155" y1="324" x2="155" y2="344" stroke="#555" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="450" y1="324" x2="450" y2="344" stroke="#555" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="745" y1="324" x2="745" y2="344" stroke="#555" stroke-width="1.5" marker-end="url(#arr)"/>
+  <rect x="120" y="344" width="660" height="40" rx="8" fill="#FEF7E0" stroke="#FBBC05" stroke-width="1.5"/>
+  <text x="450" y="369" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#7a5b00">Predict: counter ≥ 2 → taken, else not-taken  ·  compare with the actual outcome</text>
+
+  <!-- Update -->
+  <line x1="450" y1="384" x2="450" y2="402" stroke="#555" stroke-width="1.5" marker-end="url(#arr)"/>
+  <rect x="60" y="402" width="780" height="118" rx="8" fill="#F8F9FA" stroke="#555" stroke-width="1.5"/>
+  <text x="450" y="426" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#222">Update (per branch, using the actual outcome)</text>
+  <text x="450" y="452" text-anchor="middle" font-size="12.5" fill="#222">Counter: taken → +1, not-taken → −1 (saturates at 0 and 3)</text>
+  <text x="450" y="474" text-anchor="middle" font-size="12.5" fill="#222">BHR: shift right, insert actual outcome at the MSB (always updated, even for hybrid)</text>
+  <text x="450" y="496" text-anchor="middle" font-size="12.5" fill="#222">Chooser (hybrid only): +1 if only gshare was right, −1 if only bimodal was right,</text>
+  <text x="450" y="512" text-anchor="middle" font-size="12.5" fill="#222">no change if both were right or both wrong (saturates at 0 and 3)</text>
+
+  <!-- Loop back -->
+  <path d="M 840 461 L 880 461 L 880 89 L 640 89" fill="none" stroke="#4285F4" stroke-width="1.5" marker-end="url(#arrB)"/>
+  <text x="872" y="280" text-anchor="middle" font-size="12" font-weight="bold" fill="#4285F4" transform="rotate(90 872 280)">next branch</text>
+
+  <!-- Output -->
+  <line x1="450" y1="520" x2="450" y2="540" stroke="#555" stroke-width="1.5" marker-end="url(#arr)"/>
+  <rect x="120" y="540" width="660" height="84" rx="8" fill="#E8F0FE" stroke="#4285F4" stroke-width="1.5"/>
+  <text x="450" y="566" text-anchor="middle" font-size="13.5" font-weight="bold" fill="#1a56db">Output (after the whole trace)</text>
+  <text x="450" y="590" text-anchor="middle" font-size="12.5" fill="#222"># predictions  ·  # mispredictions  ·  misprediction rate (%)</text>
+  <text x="450" y="610" text-anchor="middle" font-size="12.5" fill="#222">+ final table contents (index → counter) for each predictor used</text>
+</svg>
